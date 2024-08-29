@@ -4,9 +4,12 @@ const body_parser = require('body-parser')
 const cors = require('cors')
 const URI = 'mongodb://localhost:27017'
 const PORT = 3005
+const path = require('path')
 const { MongoClient } = require('mongodb')
 const client = new MongoClient(URI)
 app.use(body_parser.json())
+
+app.use(express.static(path.join(__dirname, 'public')));
 
 app.use(cors({
     origin: 'http://127.0.0.1:5500',
@@ -22,6 +25,10 @@ client.connect().then(() => {
 })
 
 const db = client.db('shop')
+
+app.get('/', (req ,res) => {
+    res.sendFile(path.join(__dirname, 'public', 'index.html'))
+})
 
 app.get('/products', async (req, res) => {
     try {
